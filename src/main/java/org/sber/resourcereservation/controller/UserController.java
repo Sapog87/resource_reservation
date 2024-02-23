@@ -1,7 +1,9 @@
 package org.sber.resourcereservation.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/user")
+@RestController
+@RequestMapping("/users")
 public class UserController {
 }

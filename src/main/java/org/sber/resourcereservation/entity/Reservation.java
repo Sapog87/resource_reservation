@@ -23,10 +23,8 @@ public class Reservation {
     private Date reservationEnd;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "resource_id")
     private Resource resource;
 }

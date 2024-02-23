@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.service;
 
+import jakarta.transaction.Transactional;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 public class ReservationService {
 
     private final ResourceRepository resourceRepository;
@@ -32,28 +34,30 @@ public class ReservationService {
         return reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException("no such reservation with id: {%d}".formatted(id)));
     }
 
-    public List<Reservation> findByUser(User user) {
-        String name = user.getName();
-        User u = userRepository.findByName(name);
-        if (Objects.nonNull(u)) {
-            return reservationRepository.findAllByUser(u);
+    public List<Reservation> findByUser(String name) {
+        User user = userRepository.findByName(name);
+        if (Objects.nonNull(user)) {
+            return reservationRepository.findAllByUser(user);
         } else {
-            throw new UserNotFoundException("no such reservation with name: {%s}".formatted(name));
+            throw new UserNotFoundException("No user with name: {%s}".formatted(name));
         }
     }
 
-    public List<Reservation> findByResource(Resource resource) {
-        String name = resource.getName();
-        Resource r = resourceRepository.findByName(name);
-        if (Objects.nonNull(r)) {
-            return reservationRepository.findAllByResource(r);
+    public List<Reservation> findByResource(String name) {
+        Resource resource = resourceRepository.findByName(name);
+        if (Objects.nonNull(resource)) {
+            return reservationRepository.findAllByResource(resource);
         } else {
-            throw new ResourceNotFoundException("no such resource with name: {%s}".formatted(name));
+            throw new ResourceNotFoundException("No resource with name: {%s}".formatted(name));
         }
     }
 
     public List<Reservation> findByTime(Date date) {
-        //TODO
-        return null;
+        List<Reservation> reservations = reservationRepository.findAllByTime(date);
+        if (!reservations.isEmpty()) {
+            return reservations;
+        } else {
+            throw new ReservationNotFoundException("No reservations at date: {%s}".formatted(date));
+        }
     }
 }

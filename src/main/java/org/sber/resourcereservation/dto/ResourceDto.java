@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDto {
+public class ResourceDto {
     private String name;
 }
