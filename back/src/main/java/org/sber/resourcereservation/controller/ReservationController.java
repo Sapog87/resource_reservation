@@ -23,25 +23,13 @@ public class ReservationController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/find-by-id/{id}")
-    public ReservationDto findByResource(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ReservationDto findById(@PathVariable Long id) {
         Reservation reservation = reservationService.findById(id);
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    @GetMapping("/find-by-user/{name}")
-    public List<ReservationDto> findByUser(@PathVariable String name) {
-        List<Reservation> reservations = reservationService.findByUser(name);
-        return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
-    }
-
-    @GetMapping("/find-by-resource/{name}")
-    public List<ReservationDto> findByResource(@PathVariable String name) {
-        List<Reservation> reservations = reservationService.findByResource(name);
-        return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
-    }
-
-    @GetMapping("/find-by-date")
+    @GetMapping
     public List<ReservationDto> findByTime(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime) {
         List<Reservation> reservations = reservationService.findByTime(Timestamp.valueOf(localDateTime));
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
