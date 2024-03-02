@@ -8,13 +8,11 @@ import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.User;
 import org.sber.resourcereservation.service.ReservationService;
 import org.sber.resourcereservation.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -34,10 +32,10 @@ public class UserController {
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
     }
 
-    @GetMapping("/{name}")
-    public UserDto findUserById(@PathVariable String name) {
-        User user = userService.findUserById(name);
-        return modelMapper.map(user, UserDto.class);
-    }
+//    @GetMapping("/{name}")
+//    public UserDto findUserById(@PathVariable String name) {
+//        User user = userService.findUserById(name);
+//        return modelMapper.map(user, UserDto.class);
+//    }
 
 }

@@ -19,7 +19,7 @@ public class UserService {
     public User findUserById(String name) {
         User user = repository.findByName(name);
         if (Objects.isNull(user))
-            throw new UserNotFoundException("No user with name: {%s}".formatted(name));
+            throw new UserNotFoundException("No user with such name");
         return user;
     }
 }

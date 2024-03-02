@@ -31,8 +31,7 @@ public class ResourceReservationApplication {
         resource.setName("aaa");
         resource = resourceRepository.save(resource);
 
-        Long id = resourceService.acquire(user, resource, new Date(0), Duration.ofDays(3l));
-        resourceService.release(id);
+        Long id = resourceService.acquire(user, resource, new Date(0), new Date(10000));
 
         System.out.println(reservationRepository.findAll().size());
     }

@@ -30,21 +30,19 @@ public class ResourceService {
         this.reservationRepository = reservationRepository;
     }
 
-    public Long acquire(User user, Resource resource, Date start, Duration duration) {
+    public Long acquire(User user, Resource resource, Date start, Date end) {
         String userName = user.getName();
         User u = userRepository.findByName(userName);
         if (Objects.isNull(u))
-            throw new UserNotFoundException("No user with name: {%s}".formatted(userName));
+            throw new UserNotFoundException("No user with name");
 
         String resourceName = resource.getName();
         Resource r = resourceRepository.findByName(resourceName);
         if (Objects.isNull(r))
-            throw new ResourceNotFoundException("No resource with name: {%s}".formatted(resourceName));
+            throw new ResourceNotFoundException("No resource with such name");
 
-        if (duration.isNegative())
-            throw new IllegalArgumentException("Duration can't be negative");
-
-        Date end = new Date(start.getTime() + duration.toMillis());
+        if (start.after(end))
+            throw new InvalidPeriodException("Duration can't be negative");
 
         boolean isFree = reservationRepository.isResourceFreeInPeriod(start, end, r);
         if (!isFree)
@@ -64,7 +62,8 @@ public class ResourceService {
     public boolean release(Long id) {
         Reservation reservation = reservationRepository
                 .findById(id)
-                .orElseThrow(() -> new ReservationNotFoundException("no reservations with id: {%d}".formatted(id)));
+                .orElseThrow(() -> new ReservationNotFoundException("No reservations with such id"));
+        System.out.println("aaa");
         reservationRepository.delete(reservation);
         return true;
     }

@@ -3,20 +3,23 @@ package org.sber.resourcereservation.controller;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.AcquireDto;
+import org.sber.resourcereservation.dto.Id;
 import org.sber.resourcereservation.dto.ReservationDto;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
 import org.sber.resourcereservation.service.ReservationService;
 import org.sber.resourcereservation.service.ResourceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/resources")
 public class ResourceController {
@@ -32,12 +35,20 @@ public class ResourceController {
     }
 
     @PostMapping("/acquire")
-    public Long acquire(@RequestBody AcquireDto acquire) {
-        User user = modelMapper.map(acquire.getUser(), User.class);
-        Resource resource = modelMapper.map(acquire.getResource(), Resource.class);
-        Date start = Timestamp.valueOf(modelMapper.map(acquire.getStart(), LocalDateTime.class));
-        Duration duration = modelMapper.map(acquire.getDuration(), Duration.class);
-        return resourceService.acquire(user, resource, start, duration);
+    public Id acquire(@RequestBody AcquireDto acquire) {
+        User user;
+        Resource resource;
+        Date start;
+        Date end;
+        try {
+            user = modelMapper.map(acquire.getUser(), User.class);
+            resource = modelMapper.map(acquire.getResource(), Resource.class);
+            start = Timestamp.valueOf(modelMapper.map(acquire.getStart(), LocalDateTime.class));
+            end = Timestamp.valueOf(modelMapper.map(acquire.getEnd(), LocalDateTime.class));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return new Id(resourceService.acquire(user, resource, start, end));
     }
 
     @PostMapping("/release/{id}")

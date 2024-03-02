@@ -31,24 +31,36 @@ public class ReservationService {
     }
 
     public Reservation findById(Long id) {
-        return reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException("no such reservation with id: {%d}".formatted(id)));
+        return reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("No reservation with such id"));
     }
 
     public List<Reservation> findByUser(String name) {
         User user = userRepository.findByName(name);
         if (Objects.nonNull(user)) {
-            return reservationRepository.findAllByUser(user);
+            var reservations = reservationRepository.findAllByUser(user);
+            if (!reservations.isEmpty()) {
+                return reservations;
+            } else {
+                throw new ReservationNotFoundException("User with such name has no reservations");
+            }
         } else {
-            throw new UserNotFoundException("No user with name: {%s}".formatted(name));
+            throw new UserNotFoundException("No user with such name");
         }
     }
 
     public List<Reservation> findByResource(String name) {
         Resource resource = resourceRepository.findByName(name);
         if (Objects.nonNull(resource)) {
-            return reservationRepository.findAllByResource(resource);
+            var reservations = reservationRepository.findAllByResource(resource);
+            if (!reservations.isEmpty()) {
+                return reservations;
+            } else {
+                throw new ReservationNotFoundException("Resource with such name has no reservations");
+            }
         } else {
-            throw new ResourceNotFoundException("No resource with name: {%s}".formatted(name));
+            throw new ResourceNotFoundException("No resource with such name");
         }
     }
 
@@ -57,7 +69,7 @@ public class ReservationService {
         if (!reservations.isEmpty()) {
             return reservations;
         } else {
-            throw new ReservationNotFoundException("No reservations at date: {%s}".formatted(date));
+            throw new ReservationNotFoundException("No reservations at specified time");
         }
     }
 }

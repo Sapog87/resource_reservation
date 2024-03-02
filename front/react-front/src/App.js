@@ -1,25 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import UserReservations from './components/UserReservations'
+import ResourceReservations from './components/ResourceReservations'
+import ReservationsById from './components/ReservationsById'
+import ReservationsByDate from './components/ReservationsByDate'
+import Acquire from './components/Acquire'
+import Release from './components/Release'
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div className="comp"><UserReservations /></div>
+      <hr></hr>
+      <div className="comp"><ResourceReservations /></div>
+      <hr></hr>
+      <div className="comp"><ReservationsById /></div>
+      <hr></hr>
+      <div className="comp"><ReservationsByDate /></div>
+      <hr></hr>
+      <div className="comp"><Acquire /></div>
+      <hr></hr>
+      <div className="comp"><Release /></div>
+      <hr></hr>
     </div>
   );
 }
-
-export default App;

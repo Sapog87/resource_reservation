@@ -12,5 +12,6 @@ public class AcquireDto {
     private UserDto user;
     private ResourceDto resource;
     private LocalDateTime start;
-    private Duration duration;
+    private LocalDateTime end;
+    //private Duration duration;
 }
