@@ -10,22 +10,20 @@ const API_URL = process.env.REACT_APP_API_URL
 
 const ReservationsById = () => {
   const [date, setDate] = useState(null);
-  const { data, setData, loading, error, setError, getData } = GetRequest(API_URL)
+  const { data, loading, error, getData } = GetRequest(API_URL)
 
   const handleButtonClick = () => {
     if (date != null){
-      const normDate = date.toISOString()
-      getData(`/reservations?date=${normDate}`)
+      getData(`/reservations?date=${date.toISOString()}`)
     } else {
-      setError(new Error("Date and time must not be empty"));
-      setData(null);
+      getData(`/reservations`)
     }
   };
 
   return (
     <div>
-        <p>/reservations?date={`{date}`}</p>
-        <p>Enter date</p>
+        <p>GET /reservations?date={`{date}`}</p>
+        <p>date</p>
         <div style={{width : "fit-content"}}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
                 <DemoContainer components={['DateTimePicker']}>
@@ -38,7 +36,7 @@ const ReservationsById = () => {
                 </DemoContainer>
             </LocalizationProvider>
         </div>
-        <button onClick={handleButtonClick}>Fetch Data</button>
+        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
         <div>
           {loading && <p>Loading...</p>}
           {error && <p>{error.message}</p>}

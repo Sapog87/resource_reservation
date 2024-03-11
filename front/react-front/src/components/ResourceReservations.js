@@ -18,14 +18,14 @@ const ResourceReservations = () => {
 
   return (
     <div>
-        <p>/resources/{`{name}`}/reservations</p>
-        <p>Enter name of resource</p>
+        <p>GET /resources/{`{name}`}/reservations</p>
+        <p>name of resource</p>
         <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
         />
-        <button onClick={handleButtonClick}>Fetch Data</button>
+        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
         <div>
           {loading && <p>Loading...</p>}
           {error && <p>{error.message}</p>}

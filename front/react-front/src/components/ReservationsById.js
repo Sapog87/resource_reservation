@@ -18,14 +18,14 @@ const ReservationsById = () => {
 
   return (
     <div>
-        <p>/reservations/{`{id}`}</p>
-        <p>Enter reservation id</p>
+        <p>GET /reservations/{`{id}`}</p>
+        <p>reservation id</p>
         <input
             type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
         />
-        <button onClick={handleButtonClick}>Fetch Data</button>
+        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
         <div>
           {loading && <p>Loading...</p>}
           {error && <p>{error.message}</p>}

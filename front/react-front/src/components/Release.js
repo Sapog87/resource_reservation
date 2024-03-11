@@ -7,18 +7,13 @@ const Release = () => {
   const [id, setId] = useState('');
 
   const { data, setData, loading, error, setError, postData } = PostRequest(
-    {
-      user: { name : '' },
-      resource: { name : '' },
-      start: null,
-      end: null
-    },
+    {},
     API_URL
   );
   
   const handleButtonClick = () => {
     if (id != null){
-      postData(`/resources/release/${id}`);
+      postData(`/reservations/release/${id}`);
     } else {
       setError(new Error("Id must not be empty"));
       setData(null);
@@ -27,14 +22,14 @@ const Release = () => {
 
   return (
     <div>
-        <p>/resources/release</p>
-        <p>Enter reservation id</p>
+        <p>POST /reservations/release</p>
+        <p>reservation id</p>
         <input
             type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
         />
-        <button onClick={handleButtonClick}>Send</button>
+        <p><button onClick={handleButtonClick}>Send</button></p>
         <div>
           {loading && <p>Loading...</p>}
           {error && <p>{error.message}</p>}

@@ -23,9 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles(value = "dev")
+@ActiveProfiles(value = "test")
 class ResourceReservationApplicationTests {
 
     @Autowired
@@ -191,7 +189,7 @@ class ResourceReservationApplicationTests {
         mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userAuthDto))).andExpect(status().isUnauthorized());
 
         userAuthDto.setName("user1");
-        mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userAuthDto))).andExpect(status().isUnauthorized());
+        mvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userAuthDto))).andExpect(status().isNotFound());
     }
 
     @Test

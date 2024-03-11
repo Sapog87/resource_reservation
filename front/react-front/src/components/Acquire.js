@@ -43,18 +43,18 @@ const Acquire = () => {
 
   return (
     <div>
-      <p>/resources/acquire</p>
+      <p>POST /resources/acquire</p>
       <form onSubmit={handleSubmit}>
         <label>
-          <p>User</p>
+          <p>user</p>
           <input type="text" name="user.name" value={formData.user.name} onChange={handleChange} />
         </label>
         <label>
-          <p>Resource</p>
+          <p>resource</p>
           <input type="text" name="resource.name" value={formData.resource.name} onChange={handleChange} />
         </label>
         <label>
-          <p>Start</p>
+          <p>start</p>
           <div style={{ width: "fit-content" }}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
               <DemoContainer components={['DateTimePicker']}>
@@ -69,7 +69,7 @@ const Acquire = () => {
           </div>
         </label>
         <label>
-          <p>End</p>
+          <p>end</p>
           <div style={{ width: "fit-content" }}>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
               <DemoContainer components={['DateTimePicker']}>
@@ -83,7 +83,7 @@ const Acquire = () => {
             </LocalizationProvider>
           </div>
         </label>
-        <button type="submit">Send</button>
+        <p><button type="submit">Send</button></p>
       </form>
       <div>
         {loading && <p>Loading...</p>}

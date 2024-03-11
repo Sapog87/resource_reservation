@@ -18,14 +18,14 @@ const UserReservations = () => {
 
   return (
     <div>
-        <p>/users/{`{name}`}/reservations</p>
-        <p>Enter username</p>
+        <p>GET /users/{`{name}`}/reservations</p>
+        <p>username</p>
         <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
         />
-        <button onClick={handleButtonClick}>Fetch Data</button>
+        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
         <div>
           {loading && <p>Loading...</p>}
           {error && <p>{error.message}</p>}
