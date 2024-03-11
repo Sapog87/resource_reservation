@@ -1,17 +1,19 @@
 package org.sber.resourcereservation.service;
 
-import jakarta.transaction.Transactional;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
-import org.sber.resourcereservation.exception.ReservationNotFoundException;
-import org.sber.resourcereservation.exception.ResourceNotFoundException;
-import org.sber.resourcereservation.exception.UserNotFoundException;
+import org.sber.resourcereservation.exception.*;
 import org.sber.resourcereservation.repository.ReservationRepository;
 import org.sber.resourcereservation.repository.ResourceRepository;
 import org.sber.resourcereservation.repository.UserRepository;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -71,5 +73,37 @@ public class ReservationService {
         } else {
             throw new ReservationNotFoundException("No reservations at specified time");
         }
+    }
+
+    @Retryable(retryFor = SQLException.class, maxAttempts = 5, backoff = @Backoff(delay = 1500, multiplier = 3.0, random = true))
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public Reservation getReservation(Date start, Date end, Resource r, User u) {
+        boolean isFree = reservationRepository.isResourceFreeInPeriod(start, end, r);
+        if (!isFree)
+            throw new InvalidPeriodException("Specified period has collisions with other reservations");
+
+        Reservation reservation = new Reservation(u, r, start, end);
+        reservationRepository.save(reservation);
+        return reservation;
+    }
+
+    @Retryable(retryFor = SQLException.class)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public boolean release(Long id) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("No reservations with such id"));
+        System.out.println("aaa");
+        reservationRepository.delete(reservation);
+        return true;
+    }
+
+    @Transactional
+    public Boolean create(Resource resource) {
+        if (Objects.nonNull(resourceRepository.findByName(resource.getName()))) {
+            throw new ResourceAlreadyExistException("Resource with such name already exist");
+        }
+        resourceRepository.save(resource);
+        return null;
     }
 }

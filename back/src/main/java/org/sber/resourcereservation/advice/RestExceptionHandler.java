@@ -2,7 +2,7 @@ package org.sber.resourcereservation.advice;
 
 import org.sber.resourcereservation.exception.InvalidPeriodException;
 import org.sber.resourcereservation.exception.NotFoundException;
-import org.springframework.http.HttpHeaders;
+import org.sber.resourcereservation.exception.UserAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,16 +13,17 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice("org.sber.resourcereservation.controller")
 public class RestExceptionHandler {
+
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<CustomErrorResponse> notFound(NotFoundException e, WebRequest request) {
+    protected ResponseEntity<CustomErrorResponse> notFound(Exception e, WebRequest request) {
         CustomErrorResponse errorResponse = response(HttpStatus.NOT_FOUND, request, e);
-        return new ResponseEntity<>(errorResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler(InvalidPeriodException.class)
-    protected ResponseEntity<Object> invalidPeriod(InvalidPeriodException e, WebRequest request) {
+    @ExceptionHandler({InvalidPeriodException.class, UserAlreadyExistException.class})
+    protected ResponseEntity<CustomErrorResponse> conflict(Exception e, WebRequest request) {
         CustomErrorResponse errorResponse = response(HttpStatus.CONFLICT, request, e);
-        return new ResponseEntity<>(errorResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     private CustomErrorResponse response(HttpStatus status, WebRequest request, Exception e) {

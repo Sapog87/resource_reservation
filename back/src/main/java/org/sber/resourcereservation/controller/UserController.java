@@ -3,7 +3,6 @@ package org.sber.resourcereservation.controller;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.ReservationDto;
-import org.sber.resourcereservation.dto.UserDto;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.User;
 import org.sber.resourcereservation.service.ReservationService;
@@ -17,13 +16,13 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final ReservationService reservationService;
-    private final UserService userService;
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
-    public UserController(ReservationService reservationService, UserService userService, ModelMapper modelMapper) {
+    public UserController(ReservationService reservationService, ModelMapper modelMapper, UserService userService) {
         this.reservationService = reservationService;
-        this.userService = userService;
         this.modelMapper = modelMapper;
+        this.userService = userService;
     }
 
     @GetMapping("/{name}/reservations")
@@ -32,10 +31,9 @@ public class UserController {
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
     }
 
-//    @GetMapping("/{name}")
-//    public UserDto findUserById(@PathVariable String name) {
-//        User user = userService.findUserById(name);
-//        return modelMapper.map(user, UserDto.class);
-//    }
+    @GetMapping
+    public List<User> all() {
+        return userService.all();
+    }
 
 }

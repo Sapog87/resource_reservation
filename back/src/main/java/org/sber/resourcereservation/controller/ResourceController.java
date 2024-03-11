@@ -5,6 +5,7 @@ import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.AcquireDto;
 import org.sber.resourcereservation.dto.Id;
 import org.sber.resourcereservation.dto.ReservationDto;
+import org.sber.resourcereservation.dto.ResourceDto;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
@@ -53,12 +54,28 @@ public class ResourceController {
 
     @PostMapping("/release/{id}")
     public Boolean release(@PathVariable Long id) {
-        return resourceService.release(id);
+        return reservationService.release(id);
     }
 
     @GetMapping("/{name}/reservations")
     public List<ReservationDto> findByResource(@PathVariable String name) {
         List<Reservation> reservations = reservationService.findByResource(name);
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
+    }
+
+    @PostMapping("/create")
+    public Boolean create(@RequestBody ResourceDto resourceDto) {
+        Resource resource;
+        try {
+            resource = modelMapper.map(resourceDto, Resource.class);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return reservationService.create(resource);
+    }
+
+    @GetMapping
+    public List<Resource> all(){
+        return resourceService.all();
     }
 }

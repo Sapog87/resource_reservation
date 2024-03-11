@@ -1,8 +1,13 @@
 package org.sber.resourcereservation.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
+@Getter
+@Setter
 public class Id {
-    public Long id;
+    private Long id;
+    public Id() {}
 }
