@@ -1,0 +1,99 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./front/react-front
+      args:
+        REACT_APP_API_URL: http://172.20.0.1:8080
+    ports:
+      - 3000:3000
+    restart: always
+    networks:
+      - net
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    build: ./back
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      DMS: postgresql
+      DATABASE_HOSTNAME: sber-db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+    networks:
+      - net
+    depends_on:
+      - db
+
+  db:
+    container_name: sber-db
+    image: postgres:16.2
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbvolume:/var/lib/postgresql/dbvolume
+    ports:
+      - 5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - net
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafanavolume:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - net
+  
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheusvolume:/prometheus
+    networks:
+      - net
+
+  postgres-exporter:
+    container_name: postgres-exporter
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 9187
+    environment:
+      DATA_SOURCE_NAME: postgresql://postgres:postgres@sber-db:5432/postgres?sslmode=disable
+    networks:
+      - net
+
+volumes:
+  dbvolume:
+  grafanavolume:
+  prometheusvolume:
+
+networks:
+  net:
+    driver: bridge
+    ipam: 
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
