@@ -1,9 +1,11 @@
 package org.sber.resourcereservation.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Setter
@@ -17,10 +19,10 @@ public class Reservation {
     private Long id;
 
     @Column
-    private Date reservationStart;
+    private Timestamp reservationStart;
 
     @Column
-    private Date reservationEnd;
+    private Timestamp reservationEnd;
 
     @ManyToOne
     private User user;
@@ -28,7 +30,7 @@ public class Reservation {
     @ManyToOne
     private Resource resource;
 
-    public Reservation(User user, Resource resource, Date reservationStart, Date reservationEnd) {
+    public Reservation(User user, Resource resource, Timestamp reservationStart, Timestamp reservationEnd) {
         this.user = user;
         this.resource = resource;
         this.reservationStart = reservationStart;

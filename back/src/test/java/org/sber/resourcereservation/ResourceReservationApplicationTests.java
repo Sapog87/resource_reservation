@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -79,8 +80,8 @@ class ResourceReservationApplicationTests {
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setResource(resource);
-        reservation.setReservationStart(new Date(100));
-        reservation.setReservationStart(new Date(200));
+        reservation.setReservationStart(new Timestamp(10000));
+        reservation.setReservationEnd(new Timestamp(20000));
         reservationRepository.save(reservation);
     }
 
@@ -134,28 +135,37 @@ class ResourceReservationApplicationTests {
         mvc.perform(get("/reservations/" + id)).andExpect(status().isOk());
         mvc.perform(get("/reservations/0")).andExpect(status().isNotFound());
         mvc.perform(get("/reservations/t")).andExpect(status().isBadRequest());
+        mvc.perform(get("/reservations")).andExpect(status().isOk());
+        mvc.perform(get("/reservations?date=1970-01-01T00:00:15")).andExpect(status().isOk());
+        mvc.perform(get("/reservations?date=1970-01-01T00:00:25")).andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(authorities = "USER")
     void testAcquire() throws Exception {
         AcquireDto acquireDto = getAcquireDto();
+        acquireDto.setStart(new Timestamp(25000));
+        acquireDto.setEnd(new Timestamp(35000));
         mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk());
 
-        acquireDto.setStart(LocalDateTime.of(0, 1, 1, 0, 25));
-        acquireDto.setEnd(LocalDateTime.of(0, 1, 1, 0, 35));
+        acquireDto.setStart(new Timestamp(25000));
+        acquireDto.setEnd(new Timestamp(35000));
         mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isConflict());
 
-        acquireDto.setStart(LocalDateTime.of(0, 1, 1, 0, 35));
-        acquireDto.setEnd(LocalDateTime.of(0, 1, 1, 0, 45));
+        acquireDto.setStart(new Timestamp(22000));
+        acquireDto.setEnd(new Timestamp(30000));
         mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isConflict());
 
-        acquireDto.setStart(LocalDateTime.of(0, 1, 1, 0, 20));
-        acquireDto.setEnd(LocalDateTime.of(0, 1, 1, 0, 50));
+        acquireDto.setStart(new Timestamp(30000));
+        acquireDto.setEnd(new Timestamp(40000));
         mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isConflict());
 
-        acquireDto.setStart(LocalDateTime.of(0, 1, 1, 0, 32));
-        acquireDto.setEnd(LocalDateTime.of(0, 1, 1, 0, 38));
+        acquireDto.setStart(new Timestamp(20000));
+        acquireDto.setEnd(new Timestamp(40000));
+        mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isConflict());
+
+        acquireDto.setStart(new Timestamp(27000));
+        acquireDto.setEnd(new Timestamp(33000));
         mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isConflict());
     }
 
@@ -163,6 +173,7 @@ class ResourceReservationApplicationTests {
     @WithMockUser(authorities = "USER")
     void testRelease() throws Exception {
         AcquireDto acquireDto = getAcquireDto();
+
         var result = mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk()).andReturn();
         Id id = objectMapper.readValue(result.getResponse().getContentAsString(), Id.class);
         mvc.perform(post("/resources/release/" + id.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk());
@@ -202,8 +213,8 @@ class ResourceReservationApplicationTests {
         AcquireDto acquireDto = new AcquireDto();
         acquireDto.setResource(resourceDto);
         acquireDto.setUser(userDto);
-        acquireDto.setStart(LocalDateTime.of(0, 1, 1, 0, 30));
-        acquireDto.setEnd(LocalDateTime.of(0, 1, 1, 0, 40));
+        acquireDto.setStart(new Timestamp(25000));
+        acquireDto.setEnd(new Timestamp(35000));
         return acquireDto;
     }
 }

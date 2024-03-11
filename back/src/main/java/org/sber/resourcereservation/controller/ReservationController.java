@@ -6,11 +6,14 @@ import org.sber.resourcereservation.dto.ReservationDto;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin
 @RestController
@@ -24,15 +27,21 @@ public class ReservationController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ReservationDto findById(@PathVariable Long id) {
         Reservation reservation = reservationService.findById(id);
         return modelMapper.map(reservation, ReservationDto.class);
     }
 
-    @GetMapping
-    public List<ReservationDto> findByTime(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime) {
-        List<Reservation> reservations = reservationService.findByTime(Timestamp.valueOf(localDateTime));
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ReservationDto> findByTime(@RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime) {
+        List<Reservation> reservations;
+        if (Objects.isNull(localDateTime)) {
+            reservations = reservationService.all();
+        } else {
+            Timestamp timestamp = new Timestamp(localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+            reservations = reservationService.findByTime(timestamp);
+        }
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
     }
 }

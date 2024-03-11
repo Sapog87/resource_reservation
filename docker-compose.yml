@@ -3,13 +3,13 @@ version: "3.9"
 services:
   frontend:
     container_name: frontend
-    build: 
+    build:
       context: ./front/react-front
       args:
         REACT_APP_API_URL: http://172.20.0.1:8080
     ports:
-      - 3000:3000
-    restart: always
+      - "3000:3000"
+    restart: on-failure
     networks:
       - net
     depends_on:
@@ -19,8 +19,8 @@ services:
     container_name: backend
     build: ./back
     ports:
-      - 8080:8080
-    restart: always
+      - "8080:8080"
+    restart: on-failure
     environment:
       DMS: postgresql
       DATABASE_HOSTNAME: sber-db
@@ -36,24 +36,23 @@ services:
   db:
     container_name: sber-db
     image: postgres:16.2
+    restart: on-failure
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - dbvolume:/var/lib/postgresql/dbvolume
     ports:
-      - 5432
+      - "5432"
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
       - net
-    deploy:
-      restart_policy:
-        condition: on-failure
 
   grafana:
     container_name: grafana
     image: grafana/grafana-oss
+    restart: on-failure
     ports:
       - "3001:3000"
     volumes:
@@ -67,8 +66,9 @@ services:
   prometheus:
     container_name: prometheus
     image: prom/prometheus
+    restart: on-failure
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheusvolume:/prometheus
@@ -78,8 +78,9 @@ services:
   postgres-exporter:
     container_name: postgres-exporter
     image: prometheuscommunity/postgres-exporter
+    restart: on-failure
     ports:
-      - 9187
+      - "9187"
     environment:
       DATA_SOURCE_NAME: postgresql://postgres:postgres@sber-db:5432/postgres?sslmode=disable
     networks:
@@ -93,7 +94,7 @@ volumes:
 networks:
   net:
     driver: bridge
-    ipam: 
+    ipam:
       config:
         - subnet: 172.20.0.0/16
           gateway: 172.20.0.1

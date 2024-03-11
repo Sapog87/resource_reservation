@@ -6,6 +6,7 @@ import org.sber.resourcereservation.entity.Role;
 import org.sber.resourcereservation.entity.User;
 import org.sber.resourcereservation.exception.ReservationNotFoundException;
 import org.sber.resourcereservation.exception.UserAlreadyExistException;
+import org.sber.resourcereservation.exception.UserNotFoundException;
 import org.sber.resourcereservation.repository.RoleRepository;
 import org.sber.resourcereservation.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -55,10 +56,10 @@ public class UserService {
     }
 
     public List<User> all() {
-        List<User> resources = userRepository.findAll();
-        if (resources.isEmpty()) {
-            throw new ReservationNotFoundException("No resources was found");
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("No users was found");
         }
-        return resources;
+        return users;
     }
 }

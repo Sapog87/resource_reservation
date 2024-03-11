@@ -3,14 +3,13 @@ package org.sber.resourcereservation.service;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
-import org.sber.resourcereservation.exception.InvalidPeriodException;
-import org.sber.resourcereservation.exception.ReservationNotFoundException;
-import org.sber.resourcereservation.exception.ResourceNotFoundException;
-import org.sber.resourcereservation.exception.UserNotFoundException;
+import org.sber.resourcereservation.exception.*;
 import org.sber.resourcereservation.repository.ResourceRepository;
 import org.sber.resourcereservation.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,7 @@ public class ResourceService {
         this.userRepository = userRepository;
     }
 
-    public Long acquire(User user, Resource resource, Date start, Date end) {
+    public Long acquire(User user, Resource resource, Timestamp start, Timestamp end) {
         User u = validateUser(user);
         Resource r = valiadateResource(resource);
 
@@ -61,5 +60,14 @@ public class ResourceService {
             throw new ReservationNotFoundException("No resources was found");
         }
         return resources;
+    }
+
+    @Transactional
+    public Boolean create(Resource resource) {
+        if (Objects.nonNull(resourceRepository.findByName(resource.getName()))) {
+            throw new ResourceAlreadyExistException("Resource with such name already exist");
+        }
+        resourceRepository.save(resource);
+        return true;
     }
 }

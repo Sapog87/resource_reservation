@@ -3,6 +3,7 @@ package org.sber.resourcereservation.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,6 +11,6 @@ import java.time.LocalDateTime;
 public class AcquireDto {
     private UserDto user;
     private ResourceDto resource;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private Timestamp start;
+    private Timestamp end;
 }

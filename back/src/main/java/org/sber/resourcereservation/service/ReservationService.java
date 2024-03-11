@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +67,7 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> findByTime(Date date) {
+    public List<Reservation> findByTime(Timestamp date) {
         List<Reservation> reservations = reservationRepository.findAllByTime(date);
         if (!reservations.isEmpty()) {
             return reservations;
@@ -77,7 +78,7 @@ public class ReservationService {
 
     @Retryable(retryFor = SQLException.class, maxAttempts = 5, backoff = @Backoff(delay = 1500, multiplier = 3.0, random = true))
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Reservation getReservation(Date start, Date end, Resource r, User u) {
+    public Reservation getReservation(Timestamp start, Timestamp end, Resource r, User u) {
         boolean isFree = reservationRepository.isResourceFreeInPeriod(start, end, r);
         if (!isFree)
             throw new InvalidPeriodException("Specified period has collisions with other reservations");
@@ -98,12 +99,12 @@ public class ReservationService {
         return true;
     }
 
-    @Transactional
-    public Boolean create(Resource resource) {
-        if (Objects.nonNull(resourceRepository.findByName(resource.getName()))) {
-            throw new ResourceAlreadyExistException("Resource with such name already exist");
+
+    public List<Reservation> all() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        if (reservations.isEmpty()) {
+            throw new ReservationNotFoundException("No reservations was found");
         }
-        resourceRepository.save(resource);
-        return null;
+        return reservations;
     }
 }
