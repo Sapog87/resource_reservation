@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/resources")
 public class ResourceController {
@@ -48,11 +47,6 @@ public class ResourceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         return new Id(resourceService.acquire(user, resource, start, end));
-    }
-
-    @PostMapping(value = "/release/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean release(@PathVariable Long id) {
-        return reservationService.release(id);
     }
 
     @GetMapping(value = "/{name}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)

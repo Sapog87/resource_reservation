@@ -1,5 +1,8 @@
 package org.sber.resourcereservation.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.sber.resourcereservation.security.CustomAuthenticationEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ProviderManager;
@@ -11,15 +14,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.NoOpAuthenticationEntryPoint;
 
 @Configuration
 public class SecurityConfiguration {
+
+    private final ObjectMapper objectMapper;
+
+    public SecurityConfiguration(ObjectMapper objectMapper) {this.objectMapper = objectMapper;}
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
@@ -28,7 +35,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/reservations/**", "/resources/**", "/users/**").hasAnyAuthority("USER", "ADMIN")
                                 .anyRequest().denyAll()
                 )
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(configurer -> configurer.authenticationEntryPoint(new CustomAuthenticationEntryPoint(objectMapper)))
+                .cors(Customizer.withDefaults())
         ;
 
         return http.build();

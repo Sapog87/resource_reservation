@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.controller;
 
+import lombok.Value;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.ReservationDto;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/users")
 public class UserController {

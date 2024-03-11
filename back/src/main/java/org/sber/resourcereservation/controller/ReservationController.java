@@ -6,8 +6,10 @@ import org.sber.resourcereservation.dto.ReservationDto;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.service.ReservationService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -15,7 +17,6 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -27,9 +28,20 @@ public class ReservationController {
         this.modelMapper = modelMapper;
     }
 
+    @PostMapping(value = "/release/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean release(@PathVariable Long id) {
+        return reservationService.release(id);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ReservationDto findById(@PathVariable Long id) {
-        Reservation reservation = reservationService.findById(id);
+    public ReservationDto findById(@PathVariable String id) {
+        long longId;
+        try {
+            longId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be of {Long} type");
+        }
+        Reservation reservation = reservationService.findById(longId);
         return modelMapper.map(reservation, ReservationDto.class);
     }
 

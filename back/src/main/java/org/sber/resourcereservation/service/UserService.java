@@ -37,7 +37,7 @@ public class UserService {
             request.login(user.getName(), user.getPassword());
             return true;
         } catch (ServletException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+            throw new RuntimeException(e.getCause().getMessage(), e.getCause());
         }
     }
 
