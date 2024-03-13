@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,8 +26,8 @@ public class ResourceService {
         this.userRepository = userRepository;
     }
 
-    public Long acquire(User user, Resource resource, Timestamp start, Timestamp end) {
-        User u = validateUser(user);
+    public Long acquire(User user, Resource resource, Timestamp start, Timestamp end, HttpServletRequest request) {
+        User u = validateUser(user, request);
         Resource r = valiadateResource(resource);
 
         if (start.after(end))
@@ -46,8 +46,12 @@ public class ResourceService {
         return r;
     }
 
-    private User validateUser(User user) {
+    private User validateUser(User user, HttpServletRequest request) {
         String userName = user.getName();
+        String userPrincipal = request.getUserPrincipal().getName();
+        if (!Objects.equals(userName, userPrincipal)) {
+            throw new InvalidUserException("Name of authorized user must be equal to user in request");
+        }
         User u = userRepository.findByName(userName);
         if (Objects.isNull(u))
             throw new UserNotFoundException("No user with name");
@@ -56,7 +60,7 @@ public class ResourceService {
 
     public List<Resource> all() {
         List<Resource> resources = resourceRepository.findAll();
-        if (resources.isEmpty()){
+        if (resources.isEmpty()) {
             throw new ReservationNotFoundException("No resources was found");
         }
         return resources;

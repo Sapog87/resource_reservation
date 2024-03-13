@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,15 +90,18 @@ public class ReservationService {
 
     @Retryable(retryFor = SQLException.class)
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public boolean release(Long id) {
+    public boolean release(Long id, HttpServletRequest request) {
         Reservation reservation = reservationRepository
                 .findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("No reservations with such id"));
-        System.out.println("aaa");
+        String userName = reservation.getUser().getName();
+        String userPrincipal = request.getUserPrincipal().getName();
+        if (!Objects.equals(userName, userPrincipal)) {
+            throw new InvalidUserException("You can't release reservation of another user");
+        }
         reservationRepository.delete(reservation);
         return true;
     }
-
 
     public List<Reservation> all() {
         List<Reservation> reservations = reservationRepository.findAll();

@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.ReservationDto;
@@ -29,8 +30,8 @@ public class ReservationController {
     }
 
     @PostMapping(value = "/release/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean release(@PathVariable Long id) {
-        return reservationService.release(id);
+    public Boolean release(@PathVariable Long id, HttpServletRequest request) {
+        return reservationService.release(id, request);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

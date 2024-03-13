@@ -18,19 +18,20 @@ const ReservationsById = () => {
 
   return (
     <div>
-        <p>GET /reservations/{`{id}`}</p>
-        <p>reservation id</p>
-        <input
-            type="text"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-        />
-        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
-        <div>
-          {loading && <p>Loading...</p>}
-          {error && <p>{error.message}</p>}
-          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-        </div>
+      <p>Поиск резерва по id</p>
+      <p>GET /reservations/{`{id}`}</p>
+      <p>reservation id</p>
+      <input
+          type="text"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+      />
+      <p><button onClick={handleButtonClick}>Fetch Data</button></p>
+      <div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error.message}</p>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      </div>
     </div>
   );
 };

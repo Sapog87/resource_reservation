@@ -24,6 +24,7 @@ const Login = () => {
 
   return (
     <div>
+      <p>Аутентификация</p>
       <p>POST /login</p>
       <form onSubmit={handleSubmit}>
         <label>

@@ -22,26 +22,27 @@ const ReservationsById = () => {
 
   return (
     <div>
-        <p>GET /reservations?date={`{date}`}</p>
-        <p>date</p>
-        <div style={{width : "fit-content"}}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-                <DemoContainer components={['DateTimePicker']}>
-                    <DateTimePicker
-                        views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-                        label="Date and time"
-                        value={date}
-                        onChange={(e) => setDate(e)}
-                    />
-                </DemoContainer>
-            </LocalizationProvider>
-        </div>
-        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
-        <div>
-          {loading && <p>Loading...</p>}
-          {error && <p>{error.message}</p>}
-          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-        </div>
+      <p>Поиск резервов по дате</p>
+      <p>GET /reservations?date={`{date}`} (может быть пустым)</p>
+      <p>date</p>
+      <div style={{width : "fit-content"}}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
+              <DemoContainer components={['DateTimePicker']}>
+                  <DateTimePicker
+                      views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
+                      label="Date and time"
+                      value={date}
+                      onChange={(e) => setDate(e)}
+                  />
+              </DemoContainer>
+          </LocalizationProvider>
+      </div>
+      <p><button onClick={handleButtonClick}>Fetch Data</button></p>
+      <div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error.message}</p>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 package org.sber.resourcereservation.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.*;
@@ -33,7 +34,7 @@ public class ResourceController {
     }
 
     @PostMapping("/acquire")
-    public Id acquire(@RequestBody AcquireDto acquire) {
+    public Id acquire(@RequestBody AcquireDto acquire, HttpServletRequest request) {
         User user;
         Resource resource;
         Timestamp start;
@@ -46,7 +47,7 @@ public class ResourceController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        return new Id(resourceService.acquire(user, resource, start, end));
+        return new Id(resourceService.acquire(user, resource, start, end, request));
     }
 
     @GetMapping(value = "/{name}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)

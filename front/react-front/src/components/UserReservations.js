@@ -18,19 +18,20 @@ const UserReservations = () => {
 
   return (
     <div>
-        <p>GET /users/{`{name}`}/reservations</p>
-        <p>username</p>
-        <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-        />
-        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
-        <div>
-          {loading && <p>Loading...</p>}
-          {error && <p>{error.message}</p>}
-          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-        </div>
+      <p>Поиск резервов по имени пользователя</p>
+      <p>GET /users/{`{name}`}/reservations</p>
+      <p>username</p>
+      <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+      />
+      <p><button onClick={handleButtonClick}>Fetch Data</button></p>
+      <div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error.message}</p>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      </div>
     </div>
   );
 };

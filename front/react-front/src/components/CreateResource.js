@@ -23,6 +23,7 @@ const CreateResource = () => {
 
   return (
     <div>   
+      <p>Создание ресурса</p>
       <p>POST /resources/create</p>
       <form onSubmit={handleSubmit}>
         <label>

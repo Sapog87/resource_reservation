@@ -22,19 +22,20 @@ const Release = () => {
 
   return (
     <div>
-        <p>POST /reservations/release</p>
-        <p>reservation id</p>
-        <input
-            type="text"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-        />
-        <p><button onClick={handleButtonClick}>Send</button></p>
-        <div>
-          {loading && <p>Loading...</p>}
-          {error && <p>{error.message}</p>}
-          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-        </div>
+      <p>Освобождение ресурса</p>
+      <p>POST /reservations/release</p>
+      <p>reservation id</p>
+      <input
+          type="text"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+      />
+      <p><button onClick={handleButtonClick}>Send</button></p>
+      <div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error.message}</p>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      </div>
     </div>
   );
 };

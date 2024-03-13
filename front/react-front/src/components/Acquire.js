@@ -43,7 +43,8 @@ const Acquire = () => {
 
   return (
     <div>
-      <p>POST /resources/acquire</p>
+      <p>Резервирование ресурса</p>
+      <p>POST /resources/acquire (используйте имя авторизованного в данный момент пользователя)</p>
       <form onSubmit={handleSubmit}>
         <label>
           <p>user</p>

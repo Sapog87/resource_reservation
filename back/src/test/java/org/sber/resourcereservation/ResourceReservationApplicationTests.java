@@ -174,8 +174,8 @@ class ResourceReservationApplicationTests {
 
         var result = mvc.perform(post("/resources/acquire").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk()).andReturn();
         Id id = objectMapper.readValue(result.getResponse().getContentAsString(), Id.class);
-        mvc.perform(post("/resources/release/" + id.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk());
-        mvc.perform(post("/resources/release/" + id.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isNotFound());
+        mvc.perform(post("/reservations/release/" + id.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isOk());
+        mvc.perform(post("/reservations/release/" + id.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(acquireDto))).andExpect(status().isNotFound());
     }
 
     @Test

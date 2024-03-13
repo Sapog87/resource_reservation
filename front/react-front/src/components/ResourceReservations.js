@@ -18,19 +18,20 @@ const ResourceReservations = () => {
 
   return (
     <div>
-        <p>GET /resources/{`{name}`}/reservations</p>
-        <p>name of resource</p>
-        <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-        />
-        <p><button onClick={handleButtonClick}>Fetch Data</button></p>
-        <div>
-          {loading && <p>Loading...</p>}
-          {error && <p>{error.message}</p>}
-          {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-        </div>
+      <p>Поиск резервов по имени ресурса</p>
+      <p>GET /resources/{`{name}`}/reservations</p>
+      <p>name of resource</p>
+      <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+      />
+      <p><button onClick={handleButtonClick}>Fetch Data</button></p>
+      <div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error.message}</p>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      </div>
     </div>
   );
 };
