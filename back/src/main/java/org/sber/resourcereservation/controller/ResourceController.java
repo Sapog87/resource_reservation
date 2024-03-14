@@ -1,6 +1,7 @@
 package org.sber.resourcereservation.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.*;
@@ -9,14 +10,12 @@ import org.sber.resourcereservation.entity.Resource;
 import org.sber.resourcereservation.entity.User;
 import org.sber.resourcereservation.service.ReservationService;
 import org.sber.resourcereservation.service.ResourceService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @RestController
@@ -33,20 +32,12 @@ public class ResourceController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping("/acquire")
-    public Id acquire(@RequestBody AcquireDto acquire, HttpServletRequest request) {
-        User user;
-        Resource resource;
-        Timestamp start;
-        Timestamp end;
-        try {
-            user = modelMapper.map(acquire.getUser(), User.class);
-            resource = modelMapper.map(acquire.getResource(), Resource.class);
-            start = acquire.getStart();
-            end = acquire.getEnd();
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+    @PostMapping(value = "/acquire", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Id acquire(@Valid @RequestBody AcquireDto acquire, HttpServletRequest request) {
+        User user = modelMapper.map(acquire.getUser(), User.class);
+        Resource resource = modelMapper.map(acquire.getResource(), Resource.class);
+        Timestamp start = Timestamp.valueOf(acquire.getStart().atZone(ZoneId.of("GMT")).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+        Timestamp end = Timestamp.valueOf(acquire.getEnd().atZone(ZoneId.of("GMT")).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         return new Id(resourceService.acquire(user, resource, start, end, request));
     }
 
@@ -57,13 +48,8 @@ public class ResourceController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Wrapper<Boolean> create(@RequestBody ResourceDto resourceDto) {
-        Resource resource;
-        try {
-            resource = modelMapper.map(resourceDto, Resource.class);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+    public Wrapper<Boolean> create(@Valid @RequestBody ResourceDto resourceDto) {
+        Resource resource = modelMapper.map(resourceDto, Resource.class);
         return new Wrapper<>(resourceService.create(resource));
     }
 

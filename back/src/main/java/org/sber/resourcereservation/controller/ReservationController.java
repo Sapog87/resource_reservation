@@ -1,6 +1,8 @@
 package org.sber.resourcereservation.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.ReservationDto;
@@ -29,21 +31,25 @@ public class ReservationController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping(value = "/release/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean release(@PathVariable Long id, HttpServletRequest request) {
-        return reservationService.release(id, request);
+    @PostMapping(value = "/release/{id}")
+    public Boolean release(@PathVariable @Pattern(regexp = "\\d+") String id, HttpServletRequest request) {
+        long longId = parsePathVariable(id);
+        return reservationService.release(longId, request);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ReservationDto findById(@PathVariable String id) {
-        long longId;
+    public ReservationDto findById(@PathVariable @Pattern(regexp = "\\d+") String id) {
+        long longId = parsePathVariable(id);
+        Reservation reservation = reservationService.findById(longId);
+        return modelMapper.map(reservation, ReservationDto.class);
+    }
+
+    private long parsePathVariable(String id) {
         try {
-            longId = Long.parseLong(id);
+            return Long.parseLong(id);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be of {Long} type");
         }
-        Reservation reservation = reservationService.findById(longId);
-        return modelMapper.map(reservation, ReservationDto.class);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

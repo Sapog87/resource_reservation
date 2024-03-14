@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL
 const CreateResource = () => {
   const { formData, data, loading, error, setFormData, postData } = PostRequest(
     {
-      name : '' ,
+      name : '' 
     },
     API_URL
   );

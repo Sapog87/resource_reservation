@@ -2,7 +2,6 @@ package org.sber.resourcereservation.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.sber.resourcereservation.security.CustomAuthenticationEntryPoint;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ProviderManager;
@@ -14,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.NoOpAuthenticationEntryPoint;
 
 @Configuration
 public class SecurityConfiguration {
@@ -30,7 +28,7 @@ public class SecurityConfiguration {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/login", "/signup").permitAll()
+                                .requestMatchers("/login", "/signup", "/error").permitAll()
                                 .requestMatchers("/actuator/**").hasAuthority("ADMIN")
                                 .requestMatchers("/reservations/**", "/resources/**", "/users/**").hasAnyAuthority("USER", "ADMIN")
                                 .anyRequest().denyAll()
