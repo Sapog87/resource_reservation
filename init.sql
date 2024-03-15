@@ -1,22 +1,14 @@
 create sequence reservations_seq
     increment by 1;
 
-alter sequence reservations_seq owner to postgres;
-
 create sequence resources_seq
     increment by 1;
-
-alter sequence resources_seq owner to postgres;
 
 create sequence roles_seq
     increment by 1;
 
-alter sequence roles_seq owner to postgres;
-
 create sequence users_seq
     increment by 1;
-
-alter sequence users_seq owner to postgres;
 
 create table resources
 (
@@ -25,9 +17,6 @@ create table resources
     name varchar(255) not null
         unique
 );
-
-alter table resources
-    owner to postgres;
 
 create index idxl85pqajoc7v2drqv3tj3rcmpq
     on resources (name);
@@ -39,9 +28,6 @@ create table roles
     name varchar(255)
 );
 
-alter table roles
-    owner to postgres;
-
 create table users
 (
     id       bigint       not null
@@ -50,9 +36,6 @@ create table users
         unique,
     password varchar(255) not null
 );
-
-alter table users
-    owner to postgres;
 
 create table reservations
 (
@@ -68,9 +51,6 @@ create table reservations
             references users
 );
 
-alter table reservations
-    owner to postgres;
-
 create index idx3g1j96g94xpk3lpxl2qbl985x
     on users (name);
 
@@ -84,9 +64,6 @@ create table users_authorities
             references users,
     primary key (authorities_id, users_id)
 );
-
-alter table users_authorities
-    owner to postgres;
 
 INSERT INTO public.roles (id, name) VALUES (nextval('roles_seq'),'USER');
 INSERT INTO public.roles (id, name) VALUES (nextval('roles_seq'),'ADMIN');
