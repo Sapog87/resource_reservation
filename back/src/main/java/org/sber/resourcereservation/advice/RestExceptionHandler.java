@@ -1,9 +1,6 @@
 package org.sber.resourcereservation.advice;
 
-import org.sber.resourcereservation.exception.InvalidPeriodException;
-import org.sber.resourcereservation.exception.InvalidUserException;
-import org.sber.resourcereservation.exception.NotFoundException;
-import org.sber.resourcereservation.exception.UserAlreadyExistException;
+import org.sber.resourcereservation.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +18,7 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler({InvalidPeriodException.class, UserAlreadyExistException.class, InvalidUserException.class})
+    @ExceptionHandler({InvalidPeriodException.class, UserAlreadyExistException.class, InvalidUserException.class, ResourceAlreadyExistException.class})
     protected ResponseEntity<CustomErrorResponse> conflict(Exception e, WebRequest request) {
         CustomErrorResponse errorResponse = response(HttpStatus.CONFLICT, request, e);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
