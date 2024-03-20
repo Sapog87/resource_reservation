@@ -1,5 +1,9 @@
 package org.sber.resourcereservation.exception;
 
+/**
+ * Исключение, выбрасываемое при отсутствии указанного бронирования.
+ * Используется для обработки ситуаций, когда запрашиваемое бронирование не найдено.
+ */
 public class ReservationNotFoundException extends NotFoundException {
     public ReservationNotFoundException() {
     }

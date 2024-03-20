@@ -15,6 +15,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Класс реализует интерфейс {@link UserDetailsService}.
+ * Используется для загрузки информации о пользователе в системе аутентификации Spring Security.
+ */
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
@@ -23,6 +27,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Метод загружает информацию о пользователе по его имени.
+     *
+     * @param name Имя пользователя, для которого осуществляется загрузка информации.
+     * @return {@link UserDetails}, содержащий информацию о пользователе.
+     * @throws UserNotFoundException Если пользователь с указанным именем не найден.
+     */
     @Override
     public UserDetails loadUserByUsername(String name) {
         User user = userRepository.findByNameWithRoles(name);

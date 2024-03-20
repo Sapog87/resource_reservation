@@ -1,7 +1,6 @@
 package org.sber.resourcereservation.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.sber.resourcereservation.advice.CustomErrorResponse;
@@ -12,6 +11,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+/**
+ * Класс представляет собой точку входа аутентификации.
+ * Используется для обработки случаев, когда аутентификация не прошла успешно.
+ * Не показывает в браузере всплывающего окна с требованием аутентификации.
+ */
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
@@ -21,7 +25,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         CustomErrorResponse errorResponse = new CustomErrorResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());

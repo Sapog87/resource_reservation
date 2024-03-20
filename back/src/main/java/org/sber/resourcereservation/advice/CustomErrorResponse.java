@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Класс используется для создания пользовательского ответа об ошибке в приложении.
+ */
 @Getter
 @Setter
 public class CustomErrorResponse {

@@ -1,5 +1,9 @@
 package org.sber.resourcereservation.exception;
 
+/**
+ * Исключение, выбрасываемое при недопустимом периоде.
+ * Используется для обработки ситуаций, когда указанный период недействителен.
+ */
 public class InvalidPeriodException extends RuntimeException {
     public InvalidPeriodException() {
     }

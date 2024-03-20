@@ -1,0 +1,10 @@
+org.sber.resourcereservation
+org.sber.resourcereservation.advice
+org.sber.resourcereservation.configuration
+org.sber.resourcereservation.controller
+org.sber.resourcereservation.dto
+org.sber.resourcereservation.entity
+org.sber.resourcereservation.exception
+org.sber.resourcereservation.repository
+org.sber.resourcereservation.security
+org.sber.resourcereservation.service

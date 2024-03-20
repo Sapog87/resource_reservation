@@ -1,6 +1,5 @@
 package org.sber.resourcereservation.controller;
 
-import lombok.Value;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.sber.resourcereservation.dto.ReservationDto;
@@ -9,10 +8,16 @@ import org.sber.resourcereservation.entity.Reservation;
 import org.sber.resourcereservation.service.ReservationService;
 import org.sber.resourcereservation.service.UserService;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Контроллер для работы с пользователями.
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,7 +33,7 @@ public class UserController {
 
     @GetMapping(value = "/{name}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ReservationDto> findReservationsByUser(@PathVariable String name) {
-        List<Reservation> reservations = reservationService.findByUser(name);
+        List<Reservation> reservations = reservationService.findByUserName(name);
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
     }
 

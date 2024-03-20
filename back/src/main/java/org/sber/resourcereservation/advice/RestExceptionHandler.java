@@ -9,6 +9,10 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 
+/**
+ * Глобальный обработик для REST контроллеров, перехватывающий пользовательские исключения
+ * и создающий ответ вида {@link CustomErrorResponse}.
+ */
 @RestControllerAdvice("org.sber.resourcereservation.controller")
 public class RestExceptionHandler {
 
@@ -18,12 +22,6 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler({InvalidPeriodException.class, UserAlreadyExistException.class, InvalidUserException.class, ResourceAlreadyExistException.class})
-    protected ResponseEntity<CustomErrorResponse> conflict(Exception e, WebRequest request) {
-        CustomErrorResponse errorResponse = response(HttpStatus.CONFLICT, request, e);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-    }
-
     private CustomErrorResponse response(HttpStatus status, WebRequest request, Exception e) {
         CustomErrorResponse errorResponse = new CustomErrorResponse();
         errorResponse.setTimestamp(LocalDateTime.now());
@@ -31,5 +29,11 @@ public class RestExceptionHandler {
         errorResponse.setError(e.getMessage());
         errorResponse.setPath(request.getDescription(false));
         return errorResponse;
+    }
+
+    @ExceptionHandler({InvalidPeriodException.class, UserAlreadyExistException.class, InvalidUserException.class, ResourceAlreadyExistException.class})
+    protected ResponseEntity<CustomErrorResponse> conflict(Exception e, WebRequest request) {
+        CustomErrorResponse errorResponse = response(HttpStatus.CONFLICT, request, e);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }

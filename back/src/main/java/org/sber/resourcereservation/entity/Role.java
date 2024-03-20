@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Сущность для хранения информации о роли пользователя.
+ * Используется для отображения таблицы "roles" в базе данных.
+ */
 @Setter
 @Getter
 @Entity(name = "roles")

@@ -1,7 +1,6 @@
 package org.sber.resourcereservation.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -20,6 +19,9 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Контроллер для работы с резервами.
+ */
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {

@@ -1,5 +1,9 @@
 package org.sber.resourcereservation.exception;
 
+/**
+ * Исключение, выбрасываемое при отсутствии указанного пользователя.
+ * Используется для обработки ситуаций, когда запрашиваемый пользователь не найден.
+ */
 public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException() {
     }

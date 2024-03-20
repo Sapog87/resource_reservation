@@ -1,13 +1,15 @@
 package org.sber.resourcereservation.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
+/**
+ * Сущность для хранения информации о резерве.
+ * Используется для отображения таблицы "reservations" в базе данных.
+ */
 @Setter
 @Getter
 @Entity(name = "reservations")

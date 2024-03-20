@@ -18,6 +18,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 
+/**
+ * Контроллер для работы с ресурсами.
+ */
 @RestController
 @RequestMapping("/resources")
 public class ResourceController {
@@ -43,7 +46,7 @@ public class ResourceController {
 
     @GetMapping(value = "/{name}/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ReservationDto> findByResource(@PathVariable String name) {
-        List<Reservation> reservations = reservationService.findByResource(name);
+        List<Reservation> reservations = reservationService.findByResourceName(name);
         return modelMapper.map(reservations, new TypeToken<List<ReservationDto>>() {}.getType());
     }
 

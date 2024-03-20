@@ -6,6 +6,10 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Сущность для хранения информации о ресурсе.
+ * Используется для отображения таблицы "resources" в базе данных.
+ */
 @Setter
 @Getter
 @Entity(name = "resources")

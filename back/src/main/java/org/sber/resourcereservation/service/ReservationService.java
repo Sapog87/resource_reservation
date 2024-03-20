@@ -19,6 +19,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Сервисный класс для работы с резервами.
+ */
 @Service
 @Transactional
 public class ReservationService {
@@ -33,13 +36,28 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Находит резерв по его идентификатору.
+     *
+     * @param id Идентификатор бронирования.
+     * @return Объект бронирования.
+     * @throws ReservationNotFoundException Если бронирование с указанным идентификатором не найдено.
+     */
     public Reservation findById(Long id) {
         return reservationRepository
                 .findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("No reservation with such id"));
     }
 
-    public List<Reservation> findByUser(String name) {
+    /**
+     * Находит список бронирований для указанного пользователя.
+     *
+     * @param name Имя пользователя.
+     * @return Список резервов пользователя.
+     * @throws UserNotFoundException        Если пользователь с указанным именем не найден.
+     * @throws ReservationNotFoundException Если у пользователя нет резервов.
+     */
+    public List<Reservation> findByUserName(String name) {
         User user = userRepository.findByName(name);
         if (Objects.nonNull(user)) {
             var reservations = reservationRepository.findAllByUser(user);
@@ -53,7 +71,15 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> findByResource(String name) {
+    /**
+     * Находит список бронирований для указанного ресурса.
+     *
+     * @param name Имя ресурса.
+     * @return Список резервов ресурса.
+     * @throws ResourceNotFoundException    Если ресурс с указанным именем не найден.
+     * @throws ReservationNotFoundException Если ресурс не имеет резервов.
+     */
+    public List<Reservation> findByResourceName(String name) {
         Resource resource = resourceRepository.findByName(name);
         if (Objects.nonNull(resource)) {
             var reservations = reservationRepository.findAllByResource(resource);
@@ -67,6 +93,13 @@ public class ReservationService {
         }
     }
 
+    /**
+     * Находит список резервов для указанного времени.
+     *
+     * @param date Время бронирования.
+     * @return Список резервов для указанного времени.
+     * @throws ReservationNotFoundException Если нет бронирований на указанное время.
+     */
     public List<Reservation> findByTime(Timestamp date) {
         List<Reservation> reservations = reservationRepository.findAllByTime(date);
         if (!reservations.isEmpty()) {
@@ -76,18 +109,37 @@ public class ReservationService {
         }
     }
 
+    /**
+     * Пытается создать резерв для указанного временного периода.
+     *
+     * @param start    Начальное время бронирования.
+     * @param end      Конечное время бронирования.
+     * @param resource Ресурс, который требуется зарезервировать.
+     * @param user     Пользователь, который осуществляет резервирование.
+     * @return Созданное бронирование.
+     * @throws InvalidPeriodException Если указанный период занят другим резервом.
+     */
     @Retryable(retryFor = SQLException.class, maxAttempts = 5, backoff = @Backoff(delay = 1500, multiplier = 3.0, random = true))
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Reservation getReservation(Timestamp start, Timestamp end, Resource r, User u) {
-        boolean isFree = reservationRepository.isResourceFreeInPeriod(start, end, r);
+    public Reservation makeReservation(Timestamp start, Timestamp end, Resource resource, User user) {
+        boolean isFree = reservationRepository.isResourceFreeInPeriod(start, end, resource);
         if (!isFree)
             throw new InvalidPeriodException("Specified period has collisions with other reservations");
 
-        Reservation reservation = new Reservation(u, r, start, end);
+        Reservation reservation = new Reservation(user, resource, start, end);
         reservationRepository.save(reservation);
         return reservation;
     }
 
+    /**
+     * Метод release освобождает бронирование с указанным идентификатором.
+     *
+     * @param id      Идентификатор бронирования, которое нужно освободить.
+     * @param request Объект HttpServletRequest для проверки пользователя.
+     * @return true, если бронирование было успешно освобождено.
+     * @throws ReservationNotFoundException Если не найдено бронирование с указанным идентификатором.
+     * @throws InvalidUserException         Если текущий пользователь не является владельцем бронирования.
+     */
     @Retryable(retryFor = SQLException.class)
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public boolean release(Long id, HttpServletRequest request) {
@@ -103,6 +155,12 @@ public class ReservationService {
         return true;
     }
 
+    /**
+     * Возвращает список всех бронирований.
+     *
+     * @return Список всех бронирований.
+     * @throws ReservationNotFoundException Если не найдено ни одного бронирования.
+     */
     public List<Reservation> all() {
         List<Reservation> reservations = reservationRepository.findAll();
         if (reservations.isEmpty()) {

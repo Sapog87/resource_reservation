@@ -4,20 +4,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.sber.resourcereservation.entity.Role;
 import org.sber.resourcereservation.entity.User;
-import org.sber.resourcereservation.exception.ReservationNotFoundException;
 import org.sber.resourcereservation.exception.UserAlreadyExistException;
 import org.sber.resourcereservation.exception.UserNotFoundException;
 import org.sber.resourcereservation.repository.RoleRepository;
 import org.sber.resourcereservation.repository.UserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Сервисный класс для работы с пользователями.
+ */
 @Service
 public class UserService {
 
@@ -31,16 +30,14 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
-    public Boolean login(User user, HttpServletRequest request) {
-        try {
-            request.logout();
-            request.login(user.getName(), user.getPassword());
-            return true;
-        } catch (ServletException e) {
-            throw new RuntimeException(e.getCause().getMessage(), e.getCause());
-        }
-    }
-
+    /**
+     * Регистрирует нового пользователя в системе.
+     *
+     * @param user    Новый пользователь для регистрации.
+     * @param request Запрос HTTP.
+     * @return True, если регистрация выполнена успешно, иначе false.
+     * @throws UserAlreadyExistException Если пользователь с таким именем уже существует.
+     */
     public Boolean signup(User user, HttpServletRequest request) {
         if (userRepository.existsByName(user.getName())) {
             throw new UserAlreadyExistException("User with such name already exist");
@@ -55,6 +52,29 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Пытается войти в систему от имени пользователя с заданными учетными данными.
+     *
+     * @param user    Пользователь, пытающийся войти в систему.
+     * @param request Запрос HTTP.
+     * @return True, если вход выполнен успешно.
+     */
+    public Boolean login(User user, HttpServletRequest request) {
+        try {
+            request.logout();
+            request.login(user.getName(), user.getPassword());
+            return true;
+        } catch (ServletException e) {
+            throw new RuntimeException(e.getCause().getMessage(), e.getCause());
+        }
+    }
+
+    /**
+     * Получает список всех пользователей.
+     *
+     * @return Список всех пользователей.
+     * @throws UserNotFoundException Если не найдены пользователи.
+     */
     public List<User> all() {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {

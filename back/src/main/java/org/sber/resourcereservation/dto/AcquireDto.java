@@ -2,14 +2,16 @@ package org.sber.resourcereservation.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * DTO для резервирования ресурса.
+ * Используется для передачи информации о пользователе, ресурсе и временных рамках бронирования.
+ */
 @Getter
 @Setter
 public class AcquireDto {

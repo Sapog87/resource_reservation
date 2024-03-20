@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * DTO для идентификатора.
+ * Используется для передачи идентификатора сущности.
+ */
 @AllArgsConstructor
 @Getter
 @Setter

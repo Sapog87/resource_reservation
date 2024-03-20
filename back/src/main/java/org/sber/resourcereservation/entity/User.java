@@ -7,6 +7,10 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Сущность для хранения информации о пользователе.
+ * Используется для отображения таблицы "users" в базе данных.
+ */
 @Getter
 @Setter
 @Entity(name = "users")
